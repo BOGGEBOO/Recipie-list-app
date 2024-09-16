@@ -33,7 +33,8 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   //int _counter = 0;
   int _count = 0;
-  List<String> items = [];
+  // List<String> items = [];
+  List<int> list = <int>[];
 
   // void _incrementCounter() {
   //   setState(() {
@@ -49,11 +50,12 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: Center(
-        child: Text('You have added $_count lists.'),
+        child: Text('You have added $_count lists.\n $list'),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => setState(() {
           _count++;
+          list.add(_count);
         }),
         child: const Icon(Icons.add),
       ),
