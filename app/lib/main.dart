@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'shopping_list.dart';
+// import 'dart:io';
+// import 'dart:convert';
+//import 'test.json';
 
 void main() {
   runApp(const MyApp());
@@ -33,8 +37,29 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   //int _counter = 0;
   int _count = 0;
-  // List<String> items = [];
+  List<String> items = [
+    'wow',
+    'wooow',
+    'wwwoowwwww',
+    'ff',
+  ];
   List<int> list = <int>[];
+
+  List<Product> productlist = <Product>[
+    Product(name: "mjölk", type: "Dairy"),
+    Product(name: "Coffee", type: "Beans")
+  ];
+
+  List<ShoppingList> shop = <ShoppingList>[
+    ShoppingList(name: "List 1", products: <Product>[
+      Product(name: "mjölk", type: "Dairy"),
+      Product(name: "Coffee", type: "Beans")
+    ]),
+    ShoppingList(name: "Mat", products: <Product>[
+      Product(name: "Mjöl", type: "Dairy"),
+      Product(name: "Coffee", type: "Beans")
+    ])
+  ];
 
   // void _incrementCounter() {
   //   setState(() {
@@ -50,12 +75,32 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: Center(
-        child: Text('You have added $_count lists.\n $list'),
-      ),
+          child: //Text('You have added $_count lists.\n $list'),
+              GridView.builder(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2, // number of items in each row
+          mainAxisSpacing: 8.0, // spacing between rows
+          crossAxisSpacing: 8.0, // spacing between columns
+        ),
+        padding: const EdgeInsets.all(8.0), // padding around the grid
+        itemCount: shop.length, // total number of items
+        itemBuilder: (context, index) {
+          return Container(
+              color: Colors.blue, // color of grid items
+              child: Column(
+                children: [
+                  Text(shop[index].toString()),
+                  Text(shop[index].products[0].name)
+                ],
+              ));
+        },
+      )),
       floatingActionButton: FloatingActionButton(
         onPressed: () => setState(() {
           _count++;
-          list.add(_count);
+          shop.add(ShoppingList(
+              name: _count.toString(),
+              products: <Product>[Product(name: "TEST", type: "TEST")]));
         }),
         child: const Icon(Icons.add),
       ),
