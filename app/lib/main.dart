@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'shopping_list.dart';
 import 'package:go_router/go_router.dart';
+import 'recepies.dart';
+import 'account.dart';
 //import 'recepies.dart';
 // import 'dart:io';
 // import 'dart:convert';
@@ -23,6 +25,11 @@ final GoRouter _router = GoRouter(routes: <RouteBase>[
       return Recepies();
     },
   ),
+  GoRoute(
+      path: '/account',
+      builder: (BuildContext context, GoRouterState state) {
+        return Account();
+      })
 ]);
 
 class MyApp extends StatelessWidget {
@@ -147,7 +154,7 @@ class _MyHomePageState extends State<MyHomePage> {
             case 1:
               context.go('/recepies');
             case 2:
-              print("account");
+              context.go('/account');
           }
         },
       ),
@@ -155,22 +162,22 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-class Recepies extends StatefulWidget {
-  @override
-  State<Recepies> createState() => _RecepiesState();
-}
+// class Recepies extends StatefulWidget {
+//   @override
+//   State<Recepies> createState() => _RecepiesState();
+// }
 
-class _RecepiesState extends State<Recepies> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text("widget.title"),
-      ),
-      body: Center(
-          child: ElevatedButton(
-              onPressed: () => context.go('/'), child: Text("Home"))),
-    );
-  }
-}
+// class _RecepiesState extends State<Recepies> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+//         title: Text("widget.title"),
+//       ),
+//       body: Center(
+//           child: ElevatedButton(
+//               onPressed: () => context.go('/'), child: Text("Home"))),
+//     );
+//   }
+// }
