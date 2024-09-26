@@ -16,14 +16,12 @@ final GoRouter _router = GoRouter(routes: <RouteBase>[
     builder: (BuildContext context, GoRouterState state) {
       return const MyHomePage(title: "title");
     },
-    routes: <RouteBase>[
-      GoRoute(
-        path: 'recepies',
-        builder: (BuildContext context, GoRouterState state) {
-          return Recepies();
-        },
-      ),
-    ],
+  ),
+  GoRoute(
+    path: '/recepies',
+    builder: (BuildContext context, GoRouterState state) {
+      return Recepies();
+    },
   ),
 ]);
 
@@ -142,6 +140,16 @@ class _MyHomePageState extends State<MyHomePage> {
             label: 'Account',
           ),
         ],
+        onTap: (int index) {
+          switch (index) {
+            case 0:
+              context.go('/');
+            case 1:
+              context.go('/recepies');
+            case 2:
+              print("account");
+          }
+        },
       ),
     );
   }
