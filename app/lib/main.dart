@@ -130,7 +130,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ElevatedButton(
                       onPressed: () => context.go('/recepies'),
                       child: const Text("Go to recepies")),
-                  Text('visa firestore data här'),
+                  Text('name:'),
                 ],
               ));
         },
