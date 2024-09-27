@@ -12,15 +12,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 // import 'dart:convert';
 //import 'test.json';
 
-Future<void> initializeFirebase() async {
+void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-}
 
-final db = FirebaseFirestore.instance;
-
-void main() {
   runApp(const MyApp());
 }
 
@@ -71,6 +67,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final db = FirebaseFirestore.instance;
   //int _counter = 0;
   int _count = 0;
   List<String> items = [
@@ -102,9 +99,19 @@ class _MyHomePageState extends State<MyHomePage> {
   //     _counter++;
   //   });
   // }
+  String name = "";
 
   @override
   Widget build(BuildContext context) {
+    final docRef = db.collection("lists").doc('0');
+    docRef.get().then(
+      (DocumentSnapshot doc) {
+        final data = doc.data() as Map<String, dynamic>;
+        name = data["name"];
+        // ...
+      },
+      onError: (e) => print("Error getting document: $e"),
+    );
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -130,7 +137,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ElevatedButton(
                       onPressed: () => context.go('/recepies'),
                       child: const Text("Go to recepies")),
-                  Text('name:'),
+                  Text('name: $name'),
                 ],
               ));
         },
@@ -138,6 +145,7 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () => setState(() {
           _count++;
+
           shop.add(ShoppingList(
               name: _count.toString(),
               products: <Product>[Product(name: "TEST", type: "TEST")]));
