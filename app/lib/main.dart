@@ -6,6 +6,7 @@ import 'account.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:provider/provider.dart';
 
 //import 'recepies.dart';
 // import 'dart:io';
@@ -17,8 +18,12 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  runApp(const MyApp());
+  runApp(
+    const MyApp(),
+  );
 }
+
+final db = FirebaseFirestore.instance;
 
 final GoRouter _router = GoRouter(routes: <RouteBase>[
   GoRoute(
@@ -46,14 +51,16 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      routerConfig: _router,
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-    );
+    return ChangeNotifierProvider(
+        create: (context) => ShoppList('0'),
+        child: MaterialApp.router(
+          routerConfig: _router,
+          title: 'Flutter Demo',
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+            useMaterial3: true,
+          ),
+        ));
   }
 }
 
@@ -67,7 +74,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final db = FirebaseFirestore.instance;
   //int _counter = 0;
   int _count = 0;
   List<String> items = [
@@ -94,91 +100,131 @@ class _MyHomePageState extends State<MyHomePage> {
     ])
   ];
 
-  // void _incrementCounter() {
-  //   setState(() {
-  //     _counter++;
-  //   });
-  // }
+  final Stream<QuerySnapshot> _userStream =
+      FirebaseFirestore.instance.collection('lists').snapshots();
+
   String name = "";
 
   @override
   Widget build(BuildContext context) {
-    final docRef = db.collection("lists").doc('0');
-    docRef.get().then(
-      (DocumentSnapshot doc) {
-        final data = doc.data() as Map<String, dynamic>;
-        name = data["name"];
-        // ...
-      },
-      onError: (e) => print("Error getting document: $e"),
-    );
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
-      body: Center(
-          child: //Text('You have added $_count lists.\n $list'),
-              GridView.builder(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2, // number of items in each row
-          mainAxisSpacing: 8.0, // spacing between rows
-          crossAxisSpacing: 8.0, // spacing between columns
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          title: Text(widget.title),
         ),
-        padding: const EdgeInsets.all(8.0), // padding around the grid
-        itemCount: shop.length, // total number of items
-        itemBuilder: (context, index) {
-          return Container(
-              color: Colors.blue, // color of grid items
-              child: Column(
-                children: [
-                  Text(shop[index].toString()),
-                  Text(shop[index].products[0].name),
-                  ElevatedButton(
-                      onPressed: () => context.go('/recepies'),
-                      child: const Text("Go to recepies")),
-                  Text('name: $name'),
-                ],
-              ));
-        },
-      )),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => setState(() {
-          _count++;
+        body: StreamBuilder(
+            stream: _userStream,
+            builder:
+                (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+              if (snapshot.hasError) {
+                return const Text('FEEL');
+              }
 
-          shop.add(ShoppingList(
-              name: _count.toString(),
-              products: <Product>[Product(name: "TEST", type: "TEST")]));
-        }),
-        child: const Icon(Icons.add),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.receipt_long),
-            label: "Lists",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.menu_book),
-            label: 'Recepies',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_circle),
-            label: 'Account',
-          ),
-        ],
-        onTap: (int index) {
-          switch (index) {
-            case 0:
-              context.go('/');
-            case 1:
-              context.go('/recepies');
-            case 2:
-              context.go('/account');
-          }
-        },
-      ),
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Text('loading');
+              }
+
+              return ListView(
+                children: snapshot.data!.docs
+                    .map((DocumentSnapshot document) {
+                      Map<String, dynamic> data =
+                          document.data()! as Map<String, dynamic>;
+                      return ListTile(
+                        title: Text(data['name']),
+                      );
+                    })
+                    .toList()
+                    .cast(),
+              );
+            }));
+
+    //final shopp = context.watch<ShoppList>();
+    // return Scaffold(
+    //   appBar: AppBar(
+    //     backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+    //     title: Text(widget.title),
+    //   ),
+    //   body: Center(
+    //       child: //Text('You have added $_count lists.\n $list'),
+    //           GridView.builder(
+    //     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+    //       crossAxisCount: 2, // number of items in each row
+    //       mainAxisSpacing: 8.0, // spacing between rows
+    //       crossAxisSpacing: 8.0, // spacing between columns
+    //     ),
+    //     padding: const EdgeInsets.all(8.0), // padding around the grid
+    //     itemCount: shop.length, // total number of items
+    //     itemBuilder: (context, index) {
+    //       return Container(
+    //           color: Colors.blue, // color of grid items
+    //           child: Column(
+    //             children: [
+    //               Text(shopp.test),
+    //               Text(shop[index].products[0].name),
+    //               ElevatedButton(
+    //                   onPressed: () => context.go('/recepies'),
+    //                   child: const Text("Go to recepies")),
+    //               Text('name: $name'),
+    //             ],
+    //           ));
+    //     },
+    //   )),
+    //   floatingActionButton: FloatingActionButton(
+    //     onPressed: () => setState(() {
+    //       _count++;
+
+    //       shop.add(ShoppingList(
+    //           name: _count.toString(),
+    //           products: <Product>[Product(name: "TEST", type: "TEST")]));
+    //     }),
+    //     child: const Icon(Icons.add),
+    //   ),
+    //   floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+    //   bottomNavigationBar: BottomNavigationBar(
+    //     items: const <BottomNavigationBarItem>[
+    //       BottomNavigationBarItem(
+    //         icon: Icon(Icons.receipt_long),
+    //         label: "Lists",
+    //       ),
+    //       BottomNavigationBarItem(
+    //         icon: Icon(Icons.menu_book),
+    //         label: 'Recepies',
+    //       ),
+    //       BottomNavigationBarItem(
+    //         icon: Icon(Icons.account_circle),
+    //         label: 'Account',
+    //       ),
+    //     ],
+    //     onTap: (int index) {
+    //       switch (index) {
+    //         case 0:
+    //           context.go('/');
+    //         case 1:
+    //           context.go('/recepies');
+    //         case 2:
+    //           context.go('/account');
+    //       }
+    //     },
+    //   ),
+    // );
+  }
+}
+
+class ShoppList extends ChangeNotifier {
+  List<Map<String, dynamic>> _items = [];
+  String test = "";
+
+  ShoppList(id) {
+    print(id);
+    final listRef = db.collection("lists").doc(id);
+    listRef.snapshots().listen(
+      (event) {
+        test = event.data()?['test'];
+        _items = event.data()?['shopps'];
+        print("oooooooooooooo");
+        notifyListeners();
+      },
+      onError: (error) => print("listen failed: $error"),
     );
   }
 }
