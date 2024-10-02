@@ -104,109 +104,109 @@ class _MyHomePageState extends State<MyHomePage> {
       FirebaseFirestore.instance.collection('lists').snapshots();
 
   String name = "";
+  final TextEditingController controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: Text(widget.title),
-        ),
-        body: StreamBuilder(
-            stream: _userStream,
-            builder:
-                (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-              if (snapshot.hasError) {
-                return const Text('FEEL');
-              }
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: Text(widget.title),
+      ),
+      body: StreamBuilder(
+          stream: _userStream,
+          builder:
+              (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            if (snapshot.hasError) {
+              return const Text('FEEL');
+            }
 
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Text('loading');
-              }
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Text('loading');
+            }
 
-              return ListView(
-                children: snapshot.data!.docs
-                    .map((DocumentSnapshot document) {
-                      Map<String, dynamic> data =
-                          document.data()! as Map<String, dynamic>;
-                      return ListTile(
-                        title: Text(data['name']),
-                      );
-                    })
-                    .toList()
-                    .cast(),
-              );
-            }));
+            return GridView(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  mainAxisSpacing: 8.0,
+                  crossAxisSpacing: 8.0,
+                ),
+                padding: const EdgeInsets.all(8.0),
+                children: snapshot.data!.docs.map((DocumentSnapshot document) {
+                  Map<String, dynamic> data =
+                      document.data()! as Map<String, dynamic>;
+                  return Container(
+                    color: Colors.blue,
+                    child: Column(
+                      children: [
+                        Text(document.id),
+                        Text(data['name']),
+                        ElevatedButton(
+                            onPressed: () {
+                              name = "Coolt";
+                              final ref =
+                                  db.collection('lists').doc(document.id);
+                              ref.update({'name': name});
+                            },
+                            child: Text("Ändra till Coolt")),
+                        ElevatedButton(
+                            onPressed: () {
+                              name = "Inte coolt";
+                              final ref =
+                                  db.collection('lists').doc(document.id);
+                              ref.update({'name': name});
+                            },
+                            child: Text("Ändra till Inte coolt")),
+                        // ElevatedButton(
+                        //     onPressed: () {
+                        //       final ref =
+                        //           db.collection('lists').doc(document.id);
+                        //       ref.update({'name': name});
+                        //     },
+                        //     child: const Text("update")),
+                      ],
+                    ),
+                  );
+                }).toList());
+          }),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => setState(() {
+          _count++;
 
-    //final shopp = context.watch<ShoppList>();
-    // return Scaffold(
-    //   appBar: AppBar(
-    //     backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-    //     title: Text(widget.title),
-    //   ),
-    //   body: Center(
-    //       child: //Text('You have added $_count lists.\n $list'),
-    //           GridView.builder(
-    //     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-    //       crossAxisCount: 2, // number of items in each row
-    //       mainAxisSpacing: 8.0, // spacing between rows
-    //       crossAxisSpacing: 8.0, // spacing between columns
-    //     ),
-    //     padding: const EdgeInsets.all(8.0), // padding around the grid
-    //     itemCount: shop.length, // total number of items
-    //     itemBuilder: (context, index) {
-    //       return Container(
-    //           color: Colors.blue, // color of grid items
-    //           child: Column(
-    //             children: [
-    //               Text(shopp.test),
-    //               Text(shop[index].products[0].name),
-    //               ElevatedButton(
-    //                   onPressed: () => context.go('/recepies'),
-    //                   child: const Text("Go to recepies")),
-    //               Text('name: $name'),
-    //             ],
-    //           ));
-    //     },
-    //   )),
-    //   floatingActionButton: FloatingActionButton(
-    //     onPressed: () => setState(() {
-    //       _count++;
-
-    //       shop.add(ShoppingList(
-    //           name: _count.toString(),
-    //           products: <Product>[Product(name: "TEST", type: "TEST")]));
-    //     }),
-    //     child: const Icon(Icons.add),
-    //   ),
-    //   floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-    //   bottomNavigationBar: BottomNavigationBar(
-    //     items: const <BottomNavigationBarItem>[
-    //       BottomNavigationBarItem(
-    //         icon: Icon(Icons.receipt_long),
-    //         label: "Lists",
-    //       ),
-    //       BottomNavigationBarItem(
-    //         icon: Icon(Icons.menu_book),
-    //         label: 'Recepies',
-    //       ),
-    //       BottomNavigationBarItem(
-    //         icon: Icon(Icons.account_circle),
-    //         label: 'Account',
-    //       ),
-    //     ],
-    //     onTap: (int index) {
-    //       switch (index) {
-    //         case 0:
-    //           context.go('/');
-    //         case 1:
-    //           context.go('/recepies');
-    //         case 2:
-    //           context.go('/account');
-    //       }
-    //     },
-    //   ),
-    // );
+          shop.add(ShoppingList(
+              name: _count.toString(),
+              products: <Product>[Product(name: "TEST", type: "TEST")]));
+        }),
+        child: const Icon(Icons.add),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.receipt_long),
+            label: "Lists",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.menu_book),
+            label: 'Recepies',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.account_circle),
+            label: 'Account',
+          ),
+        ],
+        onTap: (int index) {
+          switch (index) {
+            case 0:
+              context.go('/');
+            case 1:
+              context.go('/recepies');
+            case 2:
+              context.go('/account');
+          }
+        },
+      ),
+    );
   }
 }
 
