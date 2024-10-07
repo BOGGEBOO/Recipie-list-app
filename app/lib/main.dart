@@ -1,26 +1,30 @@
+//packages
 import 'package:flutter/material.dart';
-import 'shopping_list.dart';
 import 'package:go_router/go_router.dart';
-import 'recepies.dart';
-import 'account.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
 
-//import 'recepies.dart';
-// import 'dart:io';
-// import 'dart:convert';
-//import 'test.json';
+//Own classes
+import 'recepies.dart';
+import 'account.dart';
+import 'edit_list.dart';
+import 'shoppList.dart';
+
+//TODO inloggning/konto & kolla på FutureBuilder
 
 void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  runApp(
-    const MyApp(),
-  );
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider(create: ((context) => ShoppList.instance('0')))
+    ],
+    child: const MyApp(),
+  ));
 }
 
 final db = FirebaseFirestore.instance;
@@ -42,6 +46,14 @@ final GoRouter _router = GoRouter(routes: <RouteBase>[
       path: '/account',
       builder: (BuildContext context, GoRouterState state) {
         return Account();
+      }),
+  GoRoute(
+      path: '/edit',
+      builder: (BuildContext context, GoRouterState state) {
+        final items = state.extra! as Map<String, dynamic>;
+        return EditList(
+          items: items,
+        );
       })
 ]);
 
@@ -51,16 +63,14 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-        create: (context) => ShoppList('0'),
-        child: MaterialApp.router(
-          routerConfig: _router,
-          title: 'Flutter Demo',
-          theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-            useMaterial3: true,
-          ),
-        ));
+    return MaterialApp.router(
+      routerConfig: _router,
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        useMaterial3: true,
+      ),
+    );
   }
 }
 
@@ -74,37 +84,14 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  //int _counter = 0;
   int _count = 0;
-  List<String> items = [
-    'wow',
-    'wooow',
-    'wwwoowwwww',
-    'ff',
-  ];
-  List<int> list = <int>[];
 
-  List<Product> productlist = <Product>[
-    Product(name: "mjölk", type: "Dairy"),
-    Product(name: "Coffee", type: "Beans")
-  ];
+  // final Stream<QuerySnapshot> _userStream =
+  //     FirebaseFirestore.instance.collection('lists').snapshots();
 
-  List<ShoppingList> shop = <ShoppingList>[
-    ShoppingList(name: "List 1", products: <Product>[
-      Product(name: "mjölk", type: "Dairy"),
-      Product(name: "Coffee", type: "Beans")
-    ]),
-    ShoppingList(name: "Mat", products: <Product>[
-      Product(name: "Mjöl", type: "Dairy"),
-      Product(name: "Coffee", type: "Beans")
-    ])
-  ];
-
-  final Stream<QuerySnapshot> _userStream =
-      FirebaseFirestore.instance.collection('lists').snapshots();
-
-  String name = "";
-  final TextEditingController controller = TextEditingController();
+  void edit(Map<String, dynamic> items) {
+    context.push('/edit', extra: items);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -113,69 +100,17 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
-      body: StreamBuilder(
-          stream: _userStream,
-          builder:
-              (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-            if (snapshot.hasError) {
-              return const Text('FEEL');
-            }
-
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Text('loading');
-            }
-
-            return GridView(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  mainAxisSpacing: 8.0,
-                  crossAxisSpacing: 8.0,
-                ),
-                padding: const EdgeInsets.all(8.0),
-                children: snapshot.data!.docs.map((DocumentSnapshot document) {
-                  Map<String, dynamic> data =
-                      document.data()! as Map<String, dynamic>;
-                  return Container(
-                    color: Colors.blue,
-                    child: Column(
-                      children: [
-                        Text(document.id),
-                        Text(data['name']),
-                        ElevatedButton(
-                            onPressed: () {
-                              name = "Coolt";
-                              final ref =
-                                  db.collection('lists').doc(document.id);
-                              ref.update({'name': name});
-                            },
-                            child: Text("Ändra till Coolt")),
-                        ElevatedButton(
-                            onPressed: () {
-                              name = "Inte coolt";
-                              final ref =
-                                  db.collection('lists').doc(document.id);
-                              ref.update({'name': name});
-                            },
-                            child: Text("Ändra till Inte coolt")),
-                        // ElevatedButton(
-                        //     onPressed: () {
-                        //       final ref =
-                        //           db.collection('lists').doc(document.id);
-                        //       ref.update({'name': name});
-                        //     },
-                        //     child: const Text("update")),
-                      ],
-                    ),
-                  );
-                }).toList());
-          }),
+      body: GridView(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            mainAxisSpacing: 8.0,
+            crossAxisSpacing: 8.0,
+          ),
+          padding: const EdgeInsets.all(8.0),
+          children: context.watch<ShoppList>().getShoppWidget(edit)),
       floatingActionButton: FloatingActionButton(
         onPressed: () => setState(() {
           _count++;
-
-          shop.add(ShoppingList(
-              name: _count.toString(),
-              products: <Product>[Product(name: "TEST", type: "TEST")]));
         }),
         child: const Icon(Icons.add),
       ),
@@ -206,25 +141,6 @@ class _MyHomePageState extends State<MyHomePage> {
           }
         },
       ),
-    );
-  }
-}
-
-class ShoppList extends ChangeNotifier {
-  List<Map<String, dynamic>> _items = [];
-  String test = "";
-
-  ShoppList(id) {
-    print(id);
-    final listRef = db.collection("lists").doc(id);
-    listRef.snapshots().listen(
-      (event) {
-        test = event.data()?['test'];
-        _items = event.data()?['shopps'];
-        print("oooooooooooooo");
-        notifyListeners();
-      },
-      onError: (error) => print("listen failed: $error"),
     );
   }
 }

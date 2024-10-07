@@ -1,6 +1,11 @@
+//packages
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+
+//Own classes
 import 'main.dart';
+import 'shoppList.dart';
 
 class Recepies extends StatefulWidget {
   @override
@@ -8,6 +13,10 @@ class Recepies extends StatefulWidget {
 }
 
 class _RecepiesState extends State<Recepies> {
+  void edit(Map<String, dynamic> items) {
+    context.go('/edit', extra: items);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -15,9 +24,14 @@ class _RecepiesState extends State<Recepies> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text("widget.title"),
       ),
-      body: Center(
-          child: ElevatedButton(
-              onPressed: () => context.go('/'), child: Text("Home"))),
+      body: GridView(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            mainAxisSpacing: 8.0,
+            crossAxisSpacing: 8.0,
+          ),
+          padding: const EdgeInsets.all(8.0),
+          children: context.watch<ShoppList>().getShoppWidget(edit)),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
@@ -47,3 +61,24 @@ class _RecepiesState extends State<Recepies> {
     );
   }
 }
+
+
+
+// class ShoppList extends ChangeNotifier {
+//   List<Map<String, dynamic>> _items = [];
+//   String test = "";
+
+//   ShoppList(id) {
+//     print(id);
+//     final listRef = db.collection("lists").doc(id);
+//     listRef.snapshots().listen(
+//       (event) {
+//         test = event.data()?['test'];
+//         _items = event.data()?['shopps'];
+//         print("oooooooooooooo");
+//         notifyListeners();
+//       },
+//       onError: (error) => print("listen failed: $error"),
+//     );
+//   }
+// }
