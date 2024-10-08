@@ -36,7 +36,7 @@ class _AccountState extends State<Account> {
         onTap: (int index) {
           switch (index) {
             case 0:
-              context.go('/');
+              context.go('/list');
             case 1:
               context.go('/recepies');
             case 2:

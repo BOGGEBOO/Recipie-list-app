@@ -1,10 +1,12 @@
 //packages
+import 'package:app/sign_in.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 //Own classes
 import 'recepies.dart';
@@ -31,7 +33,7 @@ final db = FirebaseFirestore.instance;
 
 final GoRouter _router = GoRouter(routes: <RouteBase>[
   GoRoute(
-    path: '/',
+    path: '/list',
     builder: (BuildContext context, GoRouterState state) {
       return const MyHomePage(title: "title");
     },
@@ -54,6 +56,11 @@ final GoRouter _router = GoRouter(routes: <RouteBase>[
         return EditList(
           items: items,
         );
+      }),
+  GoRoute(
+      path: '/',
+      builder: (BuildContext context, GoRouterState state) {
+        return SignIn();
       })
 ]);
 
@@ -133,7 +140,7 @@ class _MyHomePageState extends State<MyHomePage> {
         onTap: (int index) {
           switch (index) {
             case 0:
-              context.go('/');
+              context.go('/list');
             case 1:
               context.go('/recepies');
             case 2:

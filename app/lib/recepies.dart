@@ -50,7 +50,7 @@ class _RecepiesState extends State<Recepies> {
         onTap: (int index) {
           switch (index) {
             case 0:
-              context.go('/');
+              context.go('/list');
             case 1:
               context.go('/recepies');
             case 2:
