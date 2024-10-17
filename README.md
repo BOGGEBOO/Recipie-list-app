@@ -1,1 +1,5 @@
+## Beskringving
 En app vars syfte är att skapa och sedan hantera inköpslistor. En inköpslista är uppdelad i olika sektioner baserat på de typer av produkter som är tilllagda i listan. När man skapar en ny inköpslista så kan man sätta upp via inställningar att appen automatiskt lägger till visa produkter som man vet att man ändå kommer att lägga till varje gång som man skapar en lista.
+
+## Halvtids-screencast
+Videon finns att hitta i 'documents' mappen.
