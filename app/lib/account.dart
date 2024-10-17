@@ -17,7 +17,7 @@ class _AccountState extends State<Account> {
       ),
       body: Center(
           child: ElevatedButton(
-              onPressed: () => context.go('/'), child: Text("Home"))),
+              onPressed: () => context.go('/list'), child: Text("Home"))),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(

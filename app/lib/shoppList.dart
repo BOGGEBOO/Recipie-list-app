@@ -7,8 +7,9 @@ import 'main.dart';
 
 class ShoppList extends ChangeNotifier {
   String? id;
-  String name = "";
+  String? name;
   List shopps = [];
+  List recepies = [];
 
   ShoppList.instance(id) {
     getFromFirestore(id);
@@ -19,14 +20,57 @@ class ShoppList extends ChangeNotifier {
     listref.snapshots().listen((event) {
       id = id;
       name = event.data()?['name'];
-      shopps = event.data()?['shopps'];
+      List<dynamic>? temp = event.data()?['shopps'];
+      if (temp != null) {
+        shopps = temp;
+      }
+      List<dynamic>? temp2 = event.data()?['recepies'];
+      if (temp2 != null) {
+        recepies = temp2;
+      }
+      notifyListeners();
     });
-    notifyListeners();
   }
 
   List<Widget> getShoppWidget(edit) {
     List<Widget> res = [];
     for (Map<String, dynamic> e in shopps) {
+      res.add(Container(
+          color: Colors.blue,
+          child: Column(children: [
+            Text(e['name']),
+            ElevatedButton(
+                onPressed: () {
+                  edit(e);
+                },
+                child: const Text('Edit list')),
+          ])));
+    }
+    return res;
+  }
+
+  List<Widget> getItemWidget(items) {
+    List<Widget> res = [];
+    for (Map<String, dynamic> e in items) {
+      double l = e['name'].length;
+      res.add(Container(
+          color: Colors.blue,
+          child: Wrap(spacing: (100 - l), children: [
+            Text(e['name']),
+            Text(e['price'].toString()),
+            ElevatedButton(
+                onPressed: () {
+                  //edit(e);
+                },
+                child: const Text('Edit item')),
+          ])));
+    }
+    return res;
+  }
+
+  List<Widget> getRecepieWidget(edit) {
+    List<Widget> res = [];
+    for (Map<String, dynamic> e in recepies) {
       res.add(Container(
           color: Colors.blue,
           child: Column(children: [

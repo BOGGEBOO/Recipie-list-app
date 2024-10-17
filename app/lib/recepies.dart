@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 //Own classes
 import 'main.dart';
@@ -14,7 +15,7 @@ class Recepies extends StatefulWidget {
 
 class _RecepiesState extends State<Recepies> {
   void edit(Map<String, dynamic> items) {
-    context.go('/edit', extra: items);
+    context.push('/editRec', extra: items);
   }
 
   @override
@@ -31,7 +32,42 @@ class _RecepiesState extends State<Recepies> {
             crossAxisSpacing: 8.0,
           ),
           padding: const EdgeInsets.all(8.0),
-          children: context.watch<ShoppList>().getShoppWidget(edit)),
+          children: context.watch<ShoppList>().getRecepieWidget(edit)),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => setState(() {
+          var controller = TextEditingController();
+          showDialog(
+              context: context,
+              builder: (BuildContext) {
+                return AlertDialog(
+                  title: const Text('data'),
+                  content: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Form(
+                        child: TextFormField(
+                      controller: controller,
+                    )),
+                  ),
+                  actions: [
+                    ElevatedButton(
+                        onPressed: () {
+                          Map<String, dynamic> newList = {
+                            'name': controller.text,
+                            'items': []
+                          };
+                          db.collection('lists').doc(user?.uid).update({
+                            'recepies': FieldValue.arrayUnion([newList])
+                          });
+                          context.pop();
+                        },
+                        child: const Text('create'))
+                  ],
+                );
+              });
+        }),
+        child: const Icon(Icons.add),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(

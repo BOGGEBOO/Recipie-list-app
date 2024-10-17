@@ -1,4 +1,5 @@
 //packages
+import 'package:app/edit_recepie.dart';
 import 'package:app/sign_in.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -23,13 +24,15 @@ void main() async {
 
   runApp(MultiProvider(
     providers: [
-      ChangeNotifierProvider(create: ((context) => ShoppList.instance('0')))
+      ChangeNotifierProvider(
+          create: ((context) => ShoppList.instance(user?.uid)))
     ],
     child: const MyApp(),
   ));
 }
 
 final db = FirebaseFirestore.instance;
+final user = FirebaseAuth.instance.currentUser;
 
 final GoRouter _router = GoRouter(routes: <RouteBase>[
   GoRoute(
@@ -61,6 +64,12 @@ final GoRouter _router = GoRouter(routes: <RouteBase>[
       path: '/',
       builder: (BuildContext context, GoRouterState state) {
         return SignIn();
+      }),
+  GoRoute(
+      path: '/editRec',
+      builder: (BuildContext context, GoRouterState state) {
+        final items = state.extra! as Map<String, dynamic>;
+        return EditRecepie(items: items);
       })
 ]);
 
@@ -117,6 +126,36 @@ class _MyHomePageState extends State<MyHomePage> {
           children: context.watch<ShoppList>().getShoppWidget(edit)),
       floatingActionButton: FloatingActionButton(
         onPressed: () => setState(() {
+          var controller = TextEditingController();
+          showDialog(
+              context: context,
+              builder: (BuildContext) {
+                return AlertDialog(
+                  title: const Text('data'),
+                  content: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Form(
+                        child: TextFormField(
+                      controller: controller,
+                    )),
+                  ),
+                  actions: [
+                    ElevatedButton(
+                        onPressed: () {
+                          Map<String, dynamic> newList = {
+                            'name': controller.text,
+                            'items': []
+                          };
+                          db.collection('lists').doc(user?.uid).update({
+                            'shopps': FieldValue.arrayUnion([newList])
+                          });
+                          context.pop();
+                        },
+                        child: const Text('create'))
+                  ],
+                );
+              });
+
           _count++;
         }),
         child: const Icon(Icons.add),

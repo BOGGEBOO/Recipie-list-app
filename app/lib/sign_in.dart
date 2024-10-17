@@ -19,6 +19,7 @@ class _SignInState extends State<SignIn> {
   bool isNewUser = false;
   bool toggled = false;
   String buttText = "Sign in";
+  // String? uid;
   Text updateButt() {
     return Text(buttText);
   }
@@ -76,6 +77,9 @@ class _SignInState extends State<SignIn> {
                     final user = await auth.signInWithEmailAndPassword(
                         email: email, password: pass);
                     if (user != null) {
+                      final String? uid = user.user?.uid;
+                      print(uid);
+                      //db.collection('lists').doc(uid);
                       context.go('/list');
                     }
                   } catch (e) {
@@ -86,6 +90,13 @@ class _SignInState extends State<SignIn> {
                     final newUser = await auth.createUserWithEmailAndPassword(
                         email: email, password: pass);
                     if (newUser != null) {
+                      // auth.currentUser.uid;
+                      final String? uid = newUser.user?.uid;
+                      print(uid);
+                      db
+                          .collection('lists')
+                          .doc(uid)
+                          .set({'name': 'WOW', 'shopps': [], 'receipes': []});
                       context.go('/list');
                     }
                   } catch (e) {
