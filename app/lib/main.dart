@@ -146,9 +146,12 @@ class _MyHomePageState extends State<MyHomePage> {
                             'name': controller.text,
                             'items': []
                           };
-                          db.collection('lists').doc(user?.uid).update({
-                            'shopps': FieldValue.arrayUnion([newList])
-                          });
+                          db
+                              .collection('lists')
+                              .doc(user?.uid)
+                              .collection('shopps')
+                              .doc(controller.text)
+                              .set({'name': controller.text, 'list': []});
                           context.pop();
                         },
                         child: const Text('create'))

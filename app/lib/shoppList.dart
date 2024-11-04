@@ -19,15 +19,36 @@ class ShoppList extends ChangeNotifier {
     final listref = db.collection("lists").doc(id);
     listref.snapshots().listen((event) {
       id = id;
-      name = event.data()?['name'];
-      List<dynamic>? temp = event.data()?['shopps'];
-      if (temp != null) {
-        shopps = temp;
+      String temp = event.data()?['name'];
+      if (temp != name) {
+        name = temp;
       }
-      List<dynamic>? temp2 = event.data()?['recepies'];
-      if (temp2 != null) {
-        recepies = temp2;
+      // List<dynamic>? temp = event.data()?['shopps'];
+      // if (temp != null) {
+      //   shopps = temp;
+      // }
+      // List<dynamic>? temp2 = event.data()?['recepies'];
+      // if (temp2 != null) {
+      //   recepies = temp2;
+      // }
+      notifyListeners();
+    });
+    final ref = db.collection('lists').doc(id).collection('shopps');
+    ref.snapshots().listen((event) {
+      List<dynamic>? temp = [];
+      for (var doc in event.docs) {
+        temp.add(doc.data());
       }
+      shopps = temp;
+      notifyListeners();
+    });
+    final refref = db.collection('lists').doc(id).collection('recepies');
+    refref.snapshots().listen((event) {
+      List<dynamic>? temp = [];
+      for (var doc in event.docs) {
+        temp.add(doc.data());
+      }
+      recepies = temp;
       notifyListeners();
     });
   }

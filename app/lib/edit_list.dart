@@ -26,7 +26,7 @@ class _EditListState extends State<EditList> {
       body: ListView(
           padding: const EdgeInsets.all(8.0),
           children:
-              context.watch<ShoppList>().getItemWidget(widget.items['items'])),
+              context.watch<ShoppList>().getItemWidget(widget.items['list'])),
       floatingActionButton: FloatingActionButton(
         onPressed: () => setState(() {
           var controller = TextEditingController();
@@ -45,17 +45,25 @@ class _EditListState extends State<EditList> {
                   actions: [
                     ElevatedButton(
                         onPressed: () {
-                          db.collection('lists').doc(user?.uid).update({
-                            'shopps': FieldValue.arrayRemove([widget.items])
-                          });
+                          // db.collection('lists').doc(user?.uid).update({
+                          //   'shopps': FieldValue.arrayRemove([widget.items])
+                          // });
                           Map<String, dynamic> newList = {
                             'name': controller.text,
                             'price': 5
                           };
-                          widget.items['items'].add(newList);
-                          db.collection('lists').doc(user?.uid).update({
-                            'shopps': FieldValue.arrayUnion([widget.items])
-                          });
+                          // widget.items['items'].add(newList);
+                          // db.collection('lists').doc(user?.uid).update({
+                          //   'shopps': FieldValue.arrayUnion([widget.items])
+                          // });
+                          db
+                              .collection('lists')
+                              .doc(user?.uid)
+                              .collection('shopps')
+                              .doc(widget.items['name'])
+                              .update({
+                            'list': FieldValue.arrayUnion([newList])
+                          }); //TODO fanskapet uppdaterar inte
                           context.pop();
                         },
                         child: const Text('create'))

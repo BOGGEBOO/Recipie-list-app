@@ -93,10 +93,9 @@ class _SignInState extends State<SignIn> {
                       // auth.currentUser.uid;
                       final String? uid = newUser.user?.uid;
                       print(uid);
-                      db
-                          .collection('lists')
-                          .doc(uid)
-                          .set({'name': 'WOW', 'shopps': [], 'receipes': []});
+                      db.collection('lists').doc(uid).set({'name': 'WOW'});
+                      db.collection('lists').doc(uid).collection('shopps');
+                      db.collection('lists').doc(uid).collection('recepies');
                       context.go('/list');
                     }
                   } catch (e) {
