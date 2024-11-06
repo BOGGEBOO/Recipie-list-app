@@ -23,14 +23,6 @@ class ShoppList extends ChangeNotifier {
       if (temp != name) {
         name = temp;
       }
-      // List<dynamic>? temp = event.data()?['shopps'];
-      // if (temp != null) {
-      //   shopps = temp;
-      // }
-      // List<dynamic>? temp2 = event.data()?['recepies'];
-      // if (temp2 != null) {
-      //   recepies = temp2;
-      // }
       notifyListeners();
     });
     final ref = db.collection('lists').doc(id).collection('shopps');
@@ -49,6 +41,19 @@ class ShoppList extends ChangeNotifier {
         temp.add(doc.data());
       }
       recepies = temp;
+      notifyListeners();
+    });
+  }
+
+  ShoppList.updateItemWidget(items) {
+    notifyListeners();
+    // getupdatedItemWidget(items);
+  }
+
+  getupdatedItemWidget(items) async {
+    final ref =
+        db.collection('lists').doc(id).collection('shopps').doc(items['name']);
+    ref.snapshots().listen((event) {
       notifyListeners();
     });
   }

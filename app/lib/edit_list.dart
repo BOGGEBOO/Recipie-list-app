@@ -64,6 +64,7 @@ class _EditListState extends State<EditList> {
                               .update({
                             'list': FieldValue.arrayUnion([newList])
                           }); //TODO fanskapet uppdaterar inte
+                          ShoppList.updateItemWidget(widget.items['list']);
                           context.pop();
                         },
                         child: const Text('create'))
