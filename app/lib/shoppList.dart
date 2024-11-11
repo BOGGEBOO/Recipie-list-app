@@ -45,19 +45,6 @@ class ShoppList extends ChangeNotifier {
     });
   }
 
-  ShoppList.updateItemWidget(items) {
-    notifyListeners();
-    // getupdatedItemWidget(items);
-  }
-
-  getupdatedItemWidget(items) async {
-    final ref =
-        db.collection('lists').doc(id).collection('shopps').doc(items['name']);
-    ref.snapshots().listen((event) {
-      notifyListeners();
-    });
-  }
-
   List<Widget> getShoppWidget(edit) {
     List<Widget> res = [];
     for (Map<String, dynamic> e in shopps) {

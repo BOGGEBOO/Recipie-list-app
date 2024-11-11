@@ -30,6 +30,7 @@ class _EditListState extends State<EditList> {
       floatingActionButton: FloatingActionButton(
         onPressed: () => setState(() {
           var controller = TextEditingController();
+          var priceController = TextEditingController();
           showDialog(
               context: context,
               builder: (BuildContext) {
@@ -38,24 +39,26 @@ class _EditListState extends State<EditList> {
                   content: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Form(
-                        child: TextFormField(
-                      controller: controller,
+                        child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        TextFormField(
+                          controller: controller,
+                        ),
+                        TextFormField(
+                          controller: priceController,
+                        )
+                      ],
                     )),
                   ),
                   actions: [
                     ElevatedButton(
                         onPressed: () {
-                          // db.collection('lists').doc(user?.uid).update({
-                          //   'shopps': FieldValue.arrayRemove([widget.items])
-                          // });
                           Map<String, dynamic> newList = {
                             'name': controller.text,
-                            'price': 5
+                            'price': priceController.text
                           };
-                          // widget.items['items'].add(newList);
-                          // db.collection('lists').doc(user?.uid).update({
-                          //   'shopps': FieldValue.arrayUnion([widget.items])
-                          // });
+                          widget.items['list'].add(newList);
                           db
                               .collection('lists')
                               .doc(user?.uid)
@@ -63,8 +66,7 @@ class _EditListState extends State<EditList> {
                               .doc(widget.items['name'])
                               .update({
                             'list': FieldValue.arrayUnion([newList])
-                          }); //TODO fanskapet uppdaterar inte
-                          ShoppList.updateItemWidget(widget.items['list']);
+                          });
                           context.pop();
                         },
                         child: const Text('create'))
