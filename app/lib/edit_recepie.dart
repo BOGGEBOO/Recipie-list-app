@@ -26,7 +26,7 @@ class _EditListState extends State<EditRecepie> {
       body: ListView(
           padding: const EdgeInsets.all(8.0),
           children:
-              context.watch<ShoppList>().getItemWidget(widget.items['items'])),
+              context.watch<ShoppList>().getItemWidget(widget.items['list'])),
       floatingActionButton: FloatingActionButton(
         onPressed: () => setState(() {
           var controller = TextEditingController();
@@ -45,16 +45,21 @@ class _EditListState extends State<EditRecepie> {
                   actions: [
                     ElevatedButton(
                         onPressed: () {
-                          db.collection('lists').doc(user?.uid).update({
-                            'recepies': FieldValue.arrayRemove([widget.items])
-                          });
+                          // db.collection('lists').doc(user?.uid).update({
+                          //   'recepies': FieldValue.arrayRemove([widget.items])
+                          //});
                           Map<String, dynamic> newList = {
                             'name': controller.text,
                             'price': 5
                           };
-                          widget.items['items'].add(newList);
-                          db.collection('lists').doc(user?.uid).update({
-                            'recepies': FieldValue.arrayUnion([widget.items])
+                          widget.items['list'].add(newList);
+                          db
+                              .collection('lists')
+                              .doc(user?.uid)
+                              .collection('recepies')
+                              .doc(widget.items['name'])
+                              .update({
+                            'list': FieldValue.arrayUnion([newList])
                           });
                           context.pop();
                         },

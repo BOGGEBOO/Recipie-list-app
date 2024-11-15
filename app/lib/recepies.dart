@@ -55,9 +55,12 @@ class _RecepiesState extends State<Recepies> {
                             'name': controller.text,
                             'items': []
                           };
-                          db.collection('lists').doc(user?.uid).update({
-                            'recepies': FieldValue.arrayUnion([newList])
-                          });
+                          db
+                              .collection('lists')
+                              .doc(user?.uid)
+                              .collection('recepies')
+                              .doc(controller.text)
+                              .set({'name': controller.text, 'list': []});
                           context.pop();
                         },
                         child: const Text('create'))
