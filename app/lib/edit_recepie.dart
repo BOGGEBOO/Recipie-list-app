@@ -14,6 +14,10 @@ class EditRecepie extends StatefulWidget {
 }
 
 class _EditListState extends State<EditRecepie> {
+  void edit(Map<String, dynamic> items) {
+    //context.push('/edit', extra: items);
+  }
+
   @override
   Widget build(BuildContext context) {
     ShoppList model = Provider.of<ShoppList>(context, listen: true);
@@ -25,8 +29,9 @@ class _EditListState extends State<EditRecepie> {
       ),
       body: ListView(
           padding: const EdgeInsets.all(8.0),
-          children:
-              context.watch<ShoppList>().getItemWidget(widget.items['list'])),
+          children: context
+              .watch<ShoppList>()
+              .getItemWidget(widget.items['list'], edit)),
       floatingActionButton: FloatingActionButton(
         onPressed: () => setState(() {
           var controller = TextEditingController();

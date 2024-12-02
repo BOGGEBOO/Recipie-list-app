@@ -14,19 +14,42 @@ class EditList extends StatefulWidget {
 }
 
 class _EditListState extends State<EditList> {
+  void edit(Map<String, dynamic> item) {
+    //Lägg till ett id för varje item för att undvika dubbleter
+    widget.items['list'].removeWhere((value) => value["name"] == item["name"]);
+    db
+        .collection('lists')
+        .doc(user?.uid)
+        .collection('shopps')
+        .doc(widget.items['name'])
+        .update({
+      'list': FieldValue.arrayRemove([
+        {"name": item['name'], "price": item['price']}
+      ])
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     ShoppList model = Provider.of<ShoppList>(context, listen: true);
+
+    List<Widget> items =
+        context.watch<ShoppList>().getItemWidget(widget.items['list'], edit);
 
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.items['name']),
       ),
-      body: ListView(
-          padding: const EdgeInsets.all(8.0),
-          children:
-              context.watch<ShoppList>().getItemWidget(widget.items['list'])),
+      body: ListView.separated(
+          padding: EdgeInsets.all(8.0),
+          separatorBuilder: (context, index) => const SizedBox(
+                height: 10,
+              ),
+          itemCount: items.length,
+          itemBuilder: (BuildContext context, int index) {
+            return items[index];
+          }),
       floatingActionButton: FloatingActionButton(
         onPressed: () => setState(() {
           var controller = TextEditingController();
