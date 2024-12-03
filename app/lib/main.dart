@@ -109,6 +109,16 @@ class _MyHomePageState extends State<MyHomePage> {
     context.push('/edit', extra: items);
   }
 
+  void remove(Map<String, dynamic> items) {
+    //context.push('/edit', extra: items);
+    db
+        .collection('lists')
+        .doc(user?.uid)
+        .collection('shopps')
+        .doc(items['name'])
+        .delete();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -123,7 +133,7 @@ class _MyHomePageState extends State<MyHomePage> {
             crossAxisSpacing: 8.0,
           ),
           padding: const EdgeInsets.all(8.0),
-          children: context.watch<ShoppList>().getShoppWidget(edit)),
+          children: context.watch<ShoppList>().getShoppWidget(edit, remove)),
       floatingActionButton: FloatingActionButton(
         onPressed: () => setState(() {
           var controller = TextEditingController();

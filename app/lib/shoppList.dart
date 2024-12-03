@@ -45,7 +45,7 @@ class ShoppList extends ChangeNotifier {
     });
   }
 
-  List<Widget> getShoppWidget(edit) {
+  List<Widget> getShoppWidget(edit, remove) {
     List<Widget> res = [];
     for (Map<String, dynamic> e in shopps) {
       res.add(Container(
@@ -57,6 +57,11 @@ class ShoppList extends ChangeNotifier {
                   edit(e);
                 },
                 child: const Text('Edit list')),
+            ElevatedButton(
+                onPressed: () {
+                  remove(e);
+                },
+                child: const Text('Remove list')),
           ])));
     }
     return res;
@@ -65,12 +70,11 @@ class ShoppList extends ChangeNotifier {
   List<Widget> getItemWidget(items, edit) {
     List<Widget> res = [];
     for (Map<String, dynamic> e in items) {
-      double l = e['name'].length;
       res.add(Container(
           color: const Color.fromARGB(255, 198, 219, 234),
           child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
             Container(
-              width: 200,
+              width: 150,
               alignment: Alignment.centerLeft,
               child: Text(e['name']),
             ),
@@ -85,14 +89,14 @@ class ShoppList extends ChangeNotifier {
                   onPressed: () {
                     edit(e);
                   },
-                  child: const Text('Edit item')),
+                  child: const Text('Remove item')),
             )
           ])));
     }
     return res;
   }
 
-  List<Widget> getRecepieWidget(edit) {
+  List<Widget> getRecepieWidget(edit, remove) {
     List<Widget> res = [];
     for (Map<String, dynamic> e in recepies) {
       res.add(Container(
@@ -104,6 +108,11 @@ class ShoppList extends ChangeNotifier {
                   edit(e);
                 },
                 child: const Text('Edit list')),
+            ElevatedButton(
+                onPressed: () {
+                  remove(e);
+                },
+                child: const Text('Remove Recepie')),
           ])));
     }
     return res;

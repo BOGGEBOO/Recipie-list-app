@@ -15,8 +15,10 @@ class EditList extends StatefulWidget {
 
 class _EditListState extends State<EditList> {
   void edit(Map<String, dynamic> item) {
-    //Lägg till ett id för varje item för att undvika dubbleter
-    widget.items['list'].removeWhere((value) => value["name"] == item["name"]);
+    widget.items['list'].removeWhere((value) =>
+        value["id"] == item["id"] &&
+        value['name'] == item['name'] &&
+        value['price'] == item['price']);
     db
         .collection('lists')
         .doc(user?.uid)
@@ -24,7 +26,7 @@ class _EditListState extends State<EditList> {
         .doc(widget.items['name'])
         .update({
       'list': FieldValue.arrayRemove([
-        {"name": item['name'], "price": item['price']}
+        {"name": item['name'], "price": item['price'], "id": item['id']}
       ])
     });
   }
@@ -79,7 +81,8 @@ class _EditListState extends State<EditList> {
                         onPressed: () {
                           Map<String, dynamic> newList = {
                             'name': controller.text,
-                            'price': priceController.text
+                            'price': priceController.text,
+                            'id': items.length
                           };
                           widget.items['list'].add(newList);
                           db

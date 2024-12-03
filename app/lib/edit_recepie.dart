@@ -27,14 +27,43 @@ class _EditListState extends State<EditRecepie> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.items['name']),
       ),
-      body: ListView(
-          padding: const EdgeInsets.all(8.0),
-          children: context
-              .watch<ShoppList>()
-              .getItemWidget(widget.items['list'], edit)),
+      body: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text('data'),
+          ElevatedButton(
+              onPressed: () {
+                //context.push('/edit', extra: widget.items);
+                db
+                    .collection('lists')
+                    .doc(user?.uid)
+                    .collection('shopps')
+                    .doc(widget.items['name'])
+                    .set({
+                  'name': widget.items['name'],
+                  'list': widget.items['list']
+                });
+                // for (Map<String, dynamic> e in widget.items['list']){
+
+                // }
+              },
+              child: const Text('Make shopplist')),
+          Flexible(
+            child: ListView(
+                shrinkWrap: true,
+                padding: const EdgeInsets.all(8.0),
+                children: context
+                    .watch<ShoppList>()
+                    .getItemWidget(widget.items['list'], edit)),
+          ),
+          Text(
+              'data'), //TODO Knapp här som lägger till ingridiens, ändra floatingactionbutton till att lägga till instruktion för recept
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => setState(() {
           var controller = TextEditingController();
+          var priceController = TextEditingController();
           showDialog(
               context: context,
               builder: (BuildContext) {
@@ -43,9 +72,15 @@ class _EditListState extends State<EditRecepie> {
                   content: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Form(
-                        child: TextFormField(
-                      controller: controller,
-                    )),
+                      child: Column(mainAxisSize: MainAxisSize.min, children: [
+                        TextFormField(
+                          controller: controller,
+                        ),
+                        TextFormField(
+                          controller: priceController,
+                        )
+                      ]),
+                    ),
                   ),
                   actions: [
                     ElevatedButton(
@@ -55,7 +90,8 @@ class _EditListState extends State<EditRecepie> {
                           //});
                           Map<String, dynamic> newList = {
                             'name': controller.text,
-                            'price': 5
+                            'price': priceController.text,
+                            'id': widget.items['list'].length
                           };
                           widget.items['list'].add(newList);
                           db

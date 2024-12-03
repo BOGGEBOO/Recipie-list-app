@@ -18,6 +18,16 @@ class _RecepiesState extends State<Recepies> {
     context.push('/editRec', extra: items);
   }
 
+  void remove(Map<String, dynamic> items) {
+    //context.push('/edit', extra: items);
+    db
+        .collection('lists')
+        .doc(user?.uid)
+        .collection('recepies')
+        .doc(items['name'])
+        .delete();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,7 +42,7 @@ class _RecepiesState extends State<Recepies> {
             crossAxisSpacing: 8.0,
           ),
           padding: const EdgeInsets.all(8.0),
-          children: context.watch<ShoppList>().getRecepieWidget(edit)),
+          children: context.watch<ShoppList>().getRecepieWidget(edit, remove)),
       floatingActionButton: FloatingActionButton(
         onPressed: () => setState(() {
           var controller = TextEditingController();
