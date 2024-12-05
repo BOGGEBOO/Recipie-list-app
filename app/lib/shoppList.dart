@@ -117,4 +117,27 @@ class ShoppList extends ChangeNotifier {
     }
     return res;
   }
+
+  List<Widget> getIngridientWidget(ingridients) {
+    List<Widget> res = [];
+    for (Map<String, dynamic> e in ingridients) {
+      res.add(Container(
+          color: const Color.fromARGB(255, 168, 195, 214),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text(
+                e['id'].toString(),
+                style: TextStyle(fontSize: 30),
+              ),
+              Expanded(
+                  child: Text(
+                e['disc'],
+                //overflow: TextOverflow.ellipsis,
+              ))
+            ],
+          )));
+    }
+    return res;
+  }
 }

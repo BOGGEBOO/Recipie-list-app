@@ -103,32 +103,6 @@ class _EditListState extends State<EditList> {
         child: const Icon(Icons.add),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.receipt_long),
-            label: "Lists",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.menu_book),
-            label: 'Recepies',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_circle),
-            label: 'Account',
-          ),
-        ],
-        onTap: (int index) {
-          switch (index) {
-            case 0:
-              context.go('/');
-            case 1:
-              context.go('/recepies');
-            case 2:
-              context.go('/account');
-          }
-        },
-      ),
     );
   }
 

@@ -70,7 +70,11 @@ class _RecepiesState extends State<Recepies> {
                               .doc(user?.uid)
                               .collection('recepies')
                               .doc(controller.text)
-                              .set({'name': controller.text, 'list': []});
+                              .set({
+                            'name': controller.text,
+                            'list': [],
+                            'ingridients': []
+                          });
                           context.pop();
                         },
                         child: const Text('create'))

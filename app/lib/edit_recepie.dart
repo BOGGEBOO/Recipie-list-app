@@ -14,13 +14,31 @@ class EditRecepie extends StatefulWidget {
 }
 
 class _EditListState extends State<EditRecepie> {
-  void edit(Map<String, dynamic> items) {
+  void edit(Map<String, dynamic> item) {
     //context.push('/edit', extra: items);
+    widget.items['list'].removeWhere((value) =>
+        value["id"] == item["id"] &&
+        value['name'] == item['name'] &&
+        value['price'] == item['price']);
+    db
+        .collection('lists')
+        .doc(user?.uid)
+        .collection('recepies')
+        .doc(widget.items['name'])
+        .update({
+      'list': FieldValue.arrayRemove([
+        {"name": item['name'], "price": item['price'], "id": item['id']}
+      ])
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     ShoppList model = Provider.of<ShoppList>(context, listen: true);
+
+    List<Widget> ingridiens = context
+        .watch<ShoppList>()
+        .getIngridientWidget(widget.items['ingridients']);
 
     return Scaffold(
       appBar: AppBar(
@@ -30,7 +48,6 @@ class _EditListState extends State<EditRecepie> {
       body: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text('data'),
           ElevatedButton(
               onPressed: () {
                 //context.push('/edit', extra: widget.items);
@@ -55,15 +72,76 @@ class _EditListState extends State<EditRecepie> {
                 children: context
                     .watch<ShoppList>()
                     .getItemWidget(widget.items['list'], edit)),
+          ), //TODO Knapp här som lägger till ingridiens, ändra floatingactionbutton till att lägga till instruktion för recept
+          ElevatedButton(
+              onPressed: () => setState(() {
+                    var controller = TextEditingController();
+                    var priceController = TextEditingController();
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext) {
+                          return AlertDialog(
+                            title: const Text('data'),
+                            content: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Form(
+                                child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      TextFormField(
+                                        controller: controller,
+                                      ),
+                                      TextFormField(
+                                        controller: priceController,
+                                      )
+                                    ]),
+                              ),
+                            ),
+                            actions: [
+                              ElevatedButton(
+                                  onPressed: () {
+                                    // db.collection('lists').doc(user?.uid).update({
+                                    //   'recepies': FieldValue.arrayRemove([widget.items])
+                                    //});
+                                    Map<String, dynamic> newList = {
+                                      'name': controller.text,
+                                      'price': priceController.text,
+                                      'id': widget.items['list'].length
+                                    };
+                                    widget.items['list'].add(newList);
+                                    db
+                                        .collection('lists')
+                                        .doc(user?.uid)
+                                        .collection('recepies')
+                                        .doc(widget.items['name'])
+                                        .update({
+                                      'list': FieldValue.arrayUnion([newList])
+                                    });
+                                    context.pop();
+                                  },
+                                  child: const Text('create'))
+                            ],
+                          );
+                        });
+                  }),
+              child: const Text("Add ingridient")),
+          Expanded(
+            child: ListView.separated(
+                padding: EdgeInsets.all(8.0),
+                separatorBuilder: (context, index) => const SizedBox(
+                      height: 10,
+                    ),
+                shrinkWrap: true,
+                itemCount: ingridiens.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return ingridiens[index];
+                }),
           ),
-          Text(
-              'data'), //TODO Knapp här som lägger till ingridiens, ändra floatingactionbutton till att lägga till instruktion för recept
         ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => setState(() {
           var controller = TextEditingController();
-          var priceController = TextEditingController();
           showDialog(
               context: context,
               builder: (BuildContext) {
@@ -76,9 +154,6 @@ class _EditListState extends State<EditRecepie> {
                         TextFormField(
                           controller: controller,
                         ),
-                        TextFormField(
-                          controller: priceController,
-                        )
                       ]),
                     ),
                   ),
@@ -89,18 +164,17 @@ class _EditListState extends State<EditRecepie> {
                           //   'recepies': FieldValue.arrayRemove([widget.items])
                           //});
                           Map<String, dynamic> newList = {
-                            'name': controller.text,
-                            'price': priceController.text,
-                            'id': widget.items['list'].length
+                            'disc': controller.text,
+                            'id': widget.items['ingridients'].length
                           };
-                          widget.items['list'].add(newList);
+                          widget.items['ingridients'].add(newList);
                           db
                               .collection('lists')
                               .doc(user?.uid)
                               .collection('recepies')
                               .doc(widget.items['name'])
                               .update({
-                            'list': FieldValue.arrayUnion([newList])
+                            'ingridients': FieldValue.arrayUnion([newList])
                           });
                           context.pop();
                         },
@@ -112,32 +186,6 @@ class _EditListState extends State<EditRecepie> {
         child: const Icon(Icons.add),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.receipt_long),
-            label: "Lists",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.menu_book),
-            label: 'Recepies',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_circle),
-            label: 'Account',
-          ),
-        ],
-        onTap: (int index) {
-          switch (index) {
-            case 0:
-              context.go('/');
-            case 1:
-              context.go('/recepies');
-            case 2:
-              context.go('/account');
-          }
-        },
-      ),
     );
   }
 
