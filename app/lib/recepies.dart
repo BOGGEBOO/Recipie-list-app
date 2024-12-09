@@ -30,19 +30,31 @@ class _RecepiesState extends State<Recepies> {
 
   @override
   Widget build(BuildContext context) {
+    var recepies = context.watch<ShoppList>().getRecepieWidget(edit, remove);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text("widget.title"),
+        title: Text("Recepies"),
       ),
-      body: GridView(
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            mainAxisSpacing: 8.0,
-            crossAxisSpacing: 8.0,
-          ),
-          padding: const EdgeInsets.all(8.0),
-          children: context.watch<ShoppList>().getRecepieWidget(edit, remove)),
+      body: ListView.separated(
+          padding: EdgeInsets.all(8.0),
+          separatorBuilder: (context, index) => const SizedBox(
+                height: 10,
+              ),
+          //shrinkWrap: true,
+          itemCount: recepies.length,
+          itemBuilder: (BuildContext context, int index) {
+            return recepies[index];
+          }),
+      //GridView(
+      //     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+      //       crossAxisCount: 1,
+      //       mainAxisSpacing: 8.0,
+      //       crossAxisSpacing: 8.0,
+      //     ),
+      //     padding: const EdgeInsets.all(8.0),
+      //     children: context.watch<ShoppList>().getRecepieWidget(edit, remove)),
       floatingActionButton: FloatingActionButton(
         onPressed: () => setState(() {
           var controller = TextEditingController();

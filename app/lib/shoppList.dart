@@ -45,6 +45,10 @@ class ShoppList extends ChangeNotifier {
     });
   }
 
+  String? getName() {
+    return name;
+  }
+
   List<Widget> getShoppWidget(edit, remove) {
     List<Widget> res = [];
     for (Map<String, dynamic> e in shopps) {
@@ -103,16 +107,24 @@ class ShoppList extends ChangeNotifier {
           color: Colors.blue,
           child: Column(children: [
             Text(e['name']),
-            ElevatedButton(
-                onPressed: () {
-                  edit(e);
-                },
-                child: const Text('Edit list')),
-            ElevatedButton(
-                onPressed: () {
-                  remove(e);
-                },
-                child: const Text('Remove Recepie')),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                    onPressed: () {
+                      edit(e);
+                    },
+                    child: const Text('Edit list')),
+                SizedBox(
+                  width: 100,
+                ),
+                ElevatedButton(
+                    onPressed: () {
+                      remove(e);
+                    },
+                    child: const Text('Remove Recepie')),
+              ],
+            )
           ])));
     }
     return res;

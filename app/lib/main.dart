@@ -38,7 +38,7 @@ final GoRouter _router = GoRouter(routes: <RouteBase>[
   GoRoute(
     path: '/list',
     builder: (BuildContext context, GoRouterState state) {
-      return const MyHomePage(title: "title");
+      return const MyHomePage(title: "Shopps");
     },
   ),
   GoRoute(
@@ -81,7 +81,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       routerConfig: _router,
-      title: 'Flutter Demo',
+      title: 'ShoppsList',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,

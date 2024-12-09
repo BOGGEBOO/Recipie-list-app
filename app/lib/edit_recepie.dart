@@ -46,7 +46,7 @@ class _EditListState extends State<EditRecepie> {
         title: Text(widget.items['name']),
       ),
       body: Column(
-        mainAxisSize: MainAxisSize.min,
+        //mainAxisSize: MainAxisSize.max,
         children: [
           ElevatedButton(
               onPressed: () {
@@ -72,7 +72,7 @@ class _EditListState extends State<EditRecepie> {
                 children: context
                     .watch<ShoppList>()
                     .getItemWidget(widget.items['list'], edit)),
-          ), //TODO Knapp här som lägger till ingridiens, ändra floatingactionbutton till att lägga till instruktion för recept
+          ),
           ElevatedButton(
               onPressed: () => setState(() {
                     var controller = TextEditingController();
@@ -131,12 +131,29 @@ class _EditListState extends State<EditRecepie> {
                 separatorBuilder: (context, index) => const SizedBox(
                       height: 10,
                     ),
-                shrinkWrap: true,
+                //shrinkWrap: true,
                 itemCount: ingridiens.length,
                 itemBuilder: (BuildContext context, int index) {
                   return ingridiens[index];
                 }),
           ),
+          ElevatedButton(
+              onPressed: () {
+                //context.push('/edit', extra: widget.items);
+                db
+                    .collection('lists')
+                    .doc(user?.uid)
+                    .collection('recepies')
+                    .doc(widget.items['name'])
+                    .get()
+                    .then(
+                  (DocumentSnapshot doc) {
+                    final data = doc.data() as Map<String, dynamic>;
+                    db.collection('public').add(data);
+                  },
+                );
+              },
+              child: const Text('Public')),
         ],
       ),
       floatingActionButton: FloatingActionButton(

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'main.dart';
+import 'shoppList.dart';
 
 class Account extends StatefulWidget {
   @override
@@ -13,11 +16,17 @@ class _AccountState extends State<Account> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text("widget.title"),
+        title: Text("Account"),
       ),
       body: Center(
-          child: ElevatedButton(
-              onPressed: () => context.go('/list'), child: Text("Home"))),
+          child: Column(
+        children: [
+          Text(
+            context.watch<ShoppList>().getName()!,
+            style: TextStyle(height: 5, fontSize: 40),
+          ),
+        ],
+      )),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(

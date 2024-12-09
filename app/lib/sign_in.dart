@@ -16,6 +16,7 @@ class _SignInState extends State<SignIn> {
   final auth = FirebaseAuth.instance;
   String email = "";
   String pass = "";
+  String name = "";
   bool isNewUser = false;
   bool toggled = false;
   String buttText = "Sign in";
@@ -49,6 +50,13 @@ class _SignInState extends State<SignIn> {
                 pass = value;
               },
               decoration: InputDecoration(hintText: 'Enter Password'),
+            ),
+            TextField(
+              textAlign: TextAlign.center,
+              onChanged: (value) {
+                name = value;
+              },
+              decoration: InputDecoration(hintText: 'Enter Name'),
             ),
             ToggleSwitch(
               initialLabelIndex: toggled ? 0 : 1,
@@ -93,7 +101,7 @@ class _SignInState extends State<SignIn> {
                       // auth.currentUser.uid;
                       final String? uid = newUser.user?.uid;
                       print(uid);
-                      db.collection('lists').doc(uid).set({'name': 'WOW'});
+                      db.collection('lists').doc(uid).set({'name': name});
                       db.collection('lists').doc(uid).collection('shopps');
                       db.collection('lists').doc(uid).collection('recepies');
                       context.go('/list');
