@@ -41,6 +41,7 @@ dependencies:
   provider: ^6.1.2
   firebase_auth: ^5.3.1
   toggle_switch: ^2.3.0
+  standard_searchbar: ^2.1.1
 
 dev_dependencies:
   flutter_test:

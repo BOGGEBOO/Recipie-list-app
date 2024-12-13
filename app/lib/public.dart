@@ -20,7 +20,9 @@ class _PublicState extends State<Public> {
 
   @override
   Widget build(BuildContext context) {
-    var recepies = context.watch<ShoppList>().getPublicWidget(view);
+    List<Widget> recepies = [];
+    //var recepies = context.watch<ShoppList>().getPublicWidget(view);
+    var controller = TextEditingController();
 
     return Scaffold(
       appBar: AppBar(
@@ -29,12 +31,54 @@ class _PublicState extends State<Public> {
       ),
       body: Column(
         children: [
-          Text('data'), //TODO replace with searchbar
-          ListView.separated(
+          Container(
+            padding: EdgeInsets.all(16),
+            child: TextFormField(
+              controller: controller,
+              decoration: InputDecoration(
+                  labelText: 'Search',
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.arrow_forward),
+                  suffixIcon: IconButton(
+                      onPressed: () => setState(() {
+                            print(controller.text);
+                            print("object");
+
+                            print(controller.text);
+
+                            final matched = db
+                                .collection('public')
+                                .where("name", isEqualTo: controller.text)
+                                .get()
+                                .then((querySnapshot) {
+                              for (var e in querySnapshot.docs) {
+                                recepies.add(Container(
+                                    color: Colors.blue,
+                                    child: Column(children: [
+                                      Text(e['name']),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          ElevatedButton(
+                                              onPressed: () {
+                                                //view(e);
+                                                context.go('/view');
+                                              },
+                                              child:
+                                                  const Text('view recepie')),
+                                        ],
+                                      )
+                                    ])));
+                              }
+                              print(recepies.length);
+                            });
+                          }),
+                      icon: Icon(Icons.search))),
+            ),
+          ),
+          ListView.builder(
               padding: EdgeInsets.all(8.0),
-              separatorBuilder: (context, index) => const SizedBox(
-                    height: 10,
-                  ),
               shrinkWrap: true,
               itemCount: recepies.length,
               itemBuilder: (BuildContext context, int index) {
