@@ -98,6 +98,7 @@ class _RecepiesState extends State<Recepies> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.receipt_long),
@@ -111,6 +112,10 @@ class _RecepiesState extends State<Recepies> {
             icon: Icon(Icons.account_circle),
             label: 'Account',
           ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.public),
+            label: 'Public',
+          ),
         ],
         onTap: (int index) {
           switch (index) {
@@ -120,6 +125,8 @@ class _RecepiesState extends State<Recepies> {
               context.go('/recepies');
             case 2:
               context.go('/account');
+            case 3:
+              context.go('/public');
           }
         },
       ),

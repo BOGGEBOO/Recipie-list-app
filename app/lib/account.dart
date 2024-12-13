@@ -28,6 +28,7 @@ class _AccountState extends State<Account> {
         ],
       )),
       bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.receipt_long),
@@ -41,6 +42,10 @@ class _AccountState extends State<Account> {
             icon: Icon(Icons.account_circle),
             label: 'Account',
           ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.public),
+            label: 'Public',
+          ),
         ],
         onTap: (int index) {
           switch (index) {
@@ -50,6 +55,8 @@ class _AccountState extends State<Account> {
               context.go('/recepies');
             case 2:
               context.go('/account');
+            case 3:
+              context.go('/public');
           }
         },
       ),

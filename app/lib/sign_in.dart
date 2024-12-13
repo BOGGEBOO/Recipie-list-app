@@ -56,7 +56,8 @@ class _SignInState extends State<SignIn> {
               onChanged: (value) {
                 name = value;
               },
-              decoration: InputDecoration(hintText: 'Enter Name'),
+              decoration:
+                  InputDecoration(hintText: 'Enter Name (New account only)'),
             ),
             ToggleSwitch(
               initialLabelIndex: toggled ? 0 : 1,

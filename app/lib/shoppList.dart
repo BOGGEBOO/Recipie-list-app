@@ -1,4 +1,5 @@
 //packages
+import 'package:app/public.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 
@@ -10,6 +11,7 @@ class ShoppList extends ChangeNotifier {
   String? name;
   List shopps = [];
   List recepies = [];
+  List public = [];
 
   ShoppList.instance(id) {
     getFromFirestore(id);
@@ -41,6 +43,15 @@ class ShoppList extends ChangeNotifier {
         temp.add(doc.data());
       }
       recepies = temp;
+      notifyListeners();
+    });
+    final publicref = db.collection('public');
+    publicref.snapshots().listen((event) {
+      List<dynamic>? temp = [];
+      for (var doc in event.docs) {
+        temp.add(doc.data());
+      }
+      public = temp;
       notifyListeners();
     });
   }
@@ -149,6 +160,49 @@ class ShoppList extends ChangeNotifier {
               ))
             ],
           )));
+    }
+    return res;
+  }
+
+  List<Widget> getPublicWidget(view) {
+    List<Widget> res = [];
+    for (Map<String, dynamic> e in public) {
+      res.add(Container(
+          color: Colors.blue,
+          child: Column(children: [
+            Text(e['name']),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                    onPressed: () {
+                      view(e);
+                    },
+                    child: const Text('view recepie')),
+              ],
+            )
+          ])));
+    }
+    return res;
+  }
+
+  List<Widget> getPublicItemWidget(items) {
+    List<Widget> res = [];
+    for (Map<String, dynamic> e in items) {
+      res.add(Container(
+          color: const Color.fromARGB(255, 198, 219, 234),
+          child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+            Container(
+              width: 150,
+              alignment: Alignment.centerLeft,
+              child: Text(e['name']),
+            ),
+            Container(
+              width: 180,
+              alignment: Alignment.center,
+              child: Text(e['price'].toString()),
+            ),
+          ])));
     }
     return res;
   }

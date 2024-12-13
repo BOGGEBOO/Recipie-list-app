@@ -1,5 +1,6 @@
 //packages
 import 'package:app/edit_recepie.dart';
+import 'package:app/public.dart';
 import 'package:app/sign_in.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -14,8 +15,7 @@ import 'recepies.dart';
 import 'account.dart';
 import 'edit_list.dart';
 import 'shoppList.dart';
-
-//TODO inloggning/konto & kolla på FutureBuilder
+import 'view_public.dart';
 
 void main() async {
   await Firebase.initializeApp(
@@ -70,7 +70,18 @@ final GoRouter _router = GoRouter(routes: <RouteBase>[
       builder: (BuildContext context, GoRouterState state) {
         final items = state.extra! as Map<String, dynamic>;
         return EditRecepie(items: items);
-      })
+      }),
+  GoRoute(
+      path: '/public',
+      builder: (BuildContext content, GoRouterState state) {
+        return Public();
+      }),
+  GoRoute(
+      path: '/view',
+      builder: (BuildContext context, GoRouterState state) {
+        final items = state.extra! as Map<String, dynamic>;
+        return ViewRecepie(items: items);
+      }),
 ]);
 
 class MyApp extends StatelessWidget {
@@ -175,6 +186,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.receipt_long),
@@ -188,6 +200,10 @@ class _MyHomePageState extends State<MyHomePage> {
             icon: Icon(Icons.account_circle),
             label: 'Account',
           ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.public),
+            label: 'Public',
+          ),
         ],
         onTap: (int index) {
           switch (index) {
@@ -197,6 +213,8 @@ class _MyHomePageState extends State<MyHomePage> {
               context.go('/recepies');
             case 2:
               context.go('/account');
+            case 3:
+              context.go('/public');
           }
         },
       ),
