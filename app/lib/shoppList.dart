@@ -12,6 +12,10 @@ class ShoppList extends ChangeNotifier {
   List shopps = [];
   List recepies = [];
   List public = [];
+  ThemeMode theme = ThemeMode.light;
+  bool _isDark = false;
+
+  bool get isDark => _isDark;
 
   ShoppList.instance(id) {
     getFromFirestore(id);
@@ -206,4 +210,16 @@ class ShoppList extends ChangeNotifier {
     }
     return res;
   }
+
+  void toggleTheme(value) {
+    _isDark = value;
+    if (theme == ThemeMode.light) {
+      theme = ThemeMode.dark;
+    } else {
+      theme = ThemeMode.light;
+    }
+    notifyListeners();
+  }
+
+  ThemeMode get themeMode => theme;
 }

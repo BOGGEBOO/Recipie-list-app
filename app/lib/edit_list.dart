@@ -105,22 +105,4 @@ class _EditListState extends State<EditList> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
-
-  // List<Widget> getItemWidget() {
-  //   List<Widget> res = [];
-  //   for (Map<String, dynamic> e in widget.items['items']) {
-  //     res.add(Container(
-  //         color: Colors.blue,
-  //         child: Column(children: [
-  //           Text(e['name']),
-  //           Text(e['price'].toString()),
-  //           ElevatedButton(
-  //               onPressed: () {
-  //                 //edit(e);
-  //               },
-  //               child: const Text('Edit list')),
-  //         ])));
-  //   }
-  //   return res;
-  // }
 }

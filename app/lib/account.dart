@@ -25,6 +25,10 @@ class _AccountState extends State<Account> {
             context.watch<ShoppList>().getName()!,
             style: TextStyle(height: 5, fontSize: 40),
           ),
+          Switch(
+              value: context.watch<ShoppList>().isDark,
+              onChanged: (value) =>
+                  context.watch<ShoppList>().toggleTheme(value))
         ],
       )),
       bottomNavigationBar: BottomNavigationBar(

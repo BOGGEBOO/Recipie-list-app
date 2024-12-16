@@ -133,24 +133,3 @@ class _RecepiesState extends State<Recepies> {
     );
   }
 }
-
-
-
-// class ShoppList extends ChangeNotifier {
-//   List<Map<String, dynamic>> _items = [];
-//   String test = "";
-
-//   ShoppList(id) {
-//     print(id);
-//     final listRef = db.collection("lists").doc(id);
-//     listRef.snapshots().listen(
-//       (event) {
-//         test = event.data()?['test'];
-//         _items = event.data()?['shopps'];
-//         print("oooooooooooooo");
-//         notifyListeners();
-//       },
-//       onError: (error) => print("listen failed: $error"),
-//     );
-//   }
-// }

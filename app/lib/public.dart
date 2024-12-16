@@ -18,9 +18,10 @@ class _PublicState extends State<Public> {
     context.push('/view', extra: items);
   }
 
+  List<Widget> recepies = [];
+
   @override
   Widget build(BuildContext context) {
-    List<Widget> recepies = [];
     //var recepies = context.watch<ShoppList>().getPublicWidget(view);
     var controller = TextEditingController();
 
@@ -40,40 +41,41 @@ class _PublicState extends State<Public> {
                   border: OutlineInputBorder(),
                   prefixIcon: Icon(Icons.arrow_forward),
                   suffixIcon: IconButton(
-                      onPressed: () => setState(() {
-                            print(controller.text);
-                            print("object");
+                      onPressed: () {
+                        recepies.clear();
 
-                            print(controller.text);
+                        // if (controller.text.isEmpty) {
+                        //   recepies =
+                        //       context.watch<ShoppList>().getPublicWidget(view);
+                        // }
 
-                            final matched = db
-                                .collection('public')
-                                .where("name", isEqualTo: controller.text)
-                                .get()
-                                .then((querySnapshot) {
-                              for (var e in querySnapshot.docs) {
-                                recepies.add(Container(
-                                    color: Colors.blue,
-                                    child: Column(children: [
-                                      Text(e['name']),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          ElevatedButton(
-                                              onPressed: () {
-                                                //view(e);
-                                                context.go('/view');
-                                              },
-                                              child:
-                                                  const Text('view recepie')),
-                                        ],
-                                      )
-                                    ])));
-                              }
-                              print(recepies.length);
-                            });
-                          }),
+                        db
+                            .collection('public')
+                            .where("name", isEqualTo: controller.text)
+                            .get()
+                            .then((querySnapshot) {
+                          setState(() {
+                            for (var e in querySnapshot.docs) {
+                              recepies.add(Container(
+                                  color: Colors.blue,
+                                  child: Column(children: [
+                                    Text(e['name']),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        ElevatedButton(
+                                            onPressed: () {
+                                              view(e.data());
+                                            },
+                                            child: const Text('view recepie')),
+                                      ],
+                                    )
+                                  ])));
+                            }
+                          });
+                        });
+                      },
                       icon: Icon(Icons.search))),
             ),
           ),
