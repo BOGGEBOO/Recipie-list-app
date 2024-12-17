@@ -30,3 +30,6 @@ Total mängd poäng: 12
 
 ## Halvtids-screencast
 Videon finns att hitta i 'documents' mappen.
+
+## Slut-screencast
+Videon finns att hitta i 'documents' mappen.
