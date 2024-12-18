@@ -32,7 +32,7 @@ class _SignInState extends State<SignIn> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text("widget.title"),
+        title: Text("Sign In"),
       ),
       body: Form(
         key: _formKey,
@@ -63,6 +63,15 @@ class _SignInState extends State<SignIn> {
                     if (value == null || value.isEmpty) {
                       return 'Please enter a password';
                     }
+                    final regex =
+                        RegExp(r"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$");
+                    if (value != null) {
+                      if (regex.hasMatch(value)) {
+                        return null;
+                      } else {
+                        return 'Password must consist of at least eight characters and one number';
+                      }
+                    }
                     return null;
                   }),
               TextFormField(
@@ -76,6 +85,7 @@ class _SignInState extends State<SignIn> {
                     if (isNewUser == true && (value == null || value.isEmpty)) {
                       return 'Please enter a name';
                     }
+
                     return null;
                   }),
               ToggleSwitch(
